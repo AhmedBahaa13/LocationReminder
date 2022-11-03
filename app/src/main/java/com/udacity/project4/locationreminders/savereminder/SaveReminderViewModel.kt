@@ -46,7 +46,7 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
      * Save the reminder to the data source
      */
    private fun saveReminder(reminderData: ReminderDataItem) {
-        showLoading.value = true
+        showLoading.postValue(true)
         viewModelScope.launch {
             dataSource.saveReminder(
                 ReminderDTO(
@@ -58,9 +58,9 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
                     reminderData.id
                 )
             )
-            showLoading.value = false
-            showToast.value = app.getString(R.string.reminder_saved)
-            navigationCommand.value = NavigationCommand.Back
+            showLoading.postValue(false)
+            showToast.postValue(app.getString(R.string.reminder_saved))
+            navigationCommand.postValue(NavigationCommand.Back)
         }
     }
 
@@ -69,12 +69,12 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
      */
     private fun validateEnteredData(reminderData: ReminderDataItem): Boolean {
         if (reminderData.title.isNullOrEmpty()) {
-            showSnackBarInt.value = R.string.err_enter_title
+            showSnackBarInt.postValue(R.string.err_enter_title)
             return false
         }
 
         if (reminderData.location.isNullOrEmpty()) {
-            showSnackBarInt.value = R.string.err_select_location
+            showSnackBarInt.postValue(R.string.err_select_location)
             return false
         }
         return true

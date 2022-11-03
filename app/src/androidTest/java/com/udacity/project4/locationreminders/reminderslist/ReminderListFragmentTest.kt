@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
@@ -14,11 +15,15 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.udacity.project4.R
+import com.udacity.project4.locationreminders.RemindersActivity
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.local.LocalDB
 import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
+import com.udacity.project4.locationreminders.savereminder.SaveReminderFragment
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.util.DataBindingIdlingResource
+import com.udacity.project4.util.monitorActivity
+import com.udacity.project4.util.monitorFragment
 import com.udacity.project4.utils.EspressoIdlingResource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -116,8 +121,10 @@ class ReminderListFragmentTest {
         val navController = mock(NavController::class.java)
         val scenario =
             launchFragmentInContainer<ReminderListFragment>(Bundle.EMPTY, R.style.AppTheme)
+        dataBindingIdlingResource.monitorFragment(scenario)
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
+
         }
         onView(withId(R.id.addReminderFAB)).perform(click())
         verify(navController).navigate(ReminderListFragmentDirections.toSaveReminder())
@@ -125,16 +132,26 @@ class ReminderListFragmentTest {
 
     @Test
     fun saveReminder_reminderIsDisplayed() {
-        saveReminderViewModel.validateAndSaveReminder(reminder)
-        onView(withId(R.id.title)).check(matches(isDisplayed()))
-        onView(withId(R.id.description)).check(matches(isDisplayed()))
+        runBlocking {
+            repository.saveReminder(reminder.asDTO())
+        }
+        val activityScenario = ActivityScenario.launch(RemindersActivity::class.java)
+        activityScenario.onActivity {
+            dataBindingIdlingResource.activity = it }
+        // Check if reminder is displayed
+        onView(withText(reminder.title)).check(matches(isDisplayed()))
+        onView(withText(reminder.location)).check(matches(isDisplayed()))
+        activityScenario.close()
     }
 
     @Test
     fun saveUnValidReminder_showError() {
+        val scenario = launchFragmentInContainer<SaveReminderFragment>(Bundle.EMPTY,R.style.AppTheme)
+        dataBindingIdlingResource.monitorFragment(scenario)
         reminder.title = null
         saveReminderViewModel.validateAndSaveReminder(reminder)
         onView(withId(com.google.android.material.R.id.snackbar_text))
             .check(matches(withText(R.string.err_enter_title)))
+
     }
 }
