@@ -130,8 +130,7 @@ dependencies {
     // Koin testing tools
 
     // Needed JUnit version
-    testImplementation "io.insert-koin:koin-test-junit4:$koinVersion"
-
+    testImplementation ("io.insert-koin:koin-test:$koinVersion") { exclude group: 'org.mockito' }
 
     //Maps & Geofencing
     implementation "com.google.android.gms:play-services-location:$playServicesVersion"

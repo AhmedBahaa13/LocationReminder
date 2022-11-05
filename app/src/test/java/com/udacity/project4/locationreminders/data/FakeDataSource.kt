@@ -5,36 +5,54 @@ import com.udacity.project4.locationreminders.data.dto.Result
 import com.udacity.project4.locationreminders.data.local.RemindersDao
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlin.Exception
 
 //Use FakeDataSource that acts as a test double to the LocalDataSource
-class FakeDataSource(
-    private val remindersDao: RemindersDao,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
-) : ReminderDataSource {
+class FakeDataSource() : ReminderDataSource {
+    private val remindersProvider = LinkedHashMap<String,ReminderDTO>()
+    private var returnError = false
 
-//    TODO: Create a fake data source to act as a double to the real data source
+    fun setReturnError(isError: Boolean) {
+        returnError = isError
+    }
 
     override suspend fun getReminders(): Result<List<ReminderDTO>> {
-        val reminder = ReminderDTO(
-            title = "Test",
-            description = "Description",
-            location = "Location",
-            latitude = 30.085947,
-            longitude = 31.223651
-        )
-        return Result.Success(listOf<ReminderDTO>(reminder))
+        return try {
+            if (returnError){
+                throw Exception("data can't be retrieved!!")
+            }else{
+                 Result.Success(remindersProvider.values.toList())
+            }
+        }catch (e:Exception){
+            Result.Error(e.localizedMessage)
+        }
+
+    }
+
+
+    override suspend fun getReminder(id: String): Result<ReminderDTO> {
+        return try {
+            if (returnError){
+                throw Exception("data can't be retrieved!!")
+            }else{
+                val value = remindersProvider[id]
+                if (value == null) {
+                    throw Exception("Test Exception!!")
+                } else {
+                    Result.Success(value)
+                }
+            }
+        }catch (e:Exception){
+            Result.Error(e.localizedMessage)
+        }
     }
 
     override suspend fun saveReminder(reminder: ReminderDTO) {
-        remindersDao.saveReminder(reminder)
-    }
-
-    override suspend fun getReminder(id: String): Result<ReminderDTO> {
-       return Result.Success(remindersDao.getReminderById(id)!!)
+        remindersProvider[reminder.id] = reminder
     }
 
     override suspend fun deleteAllReminders() {
-        remindersDao.deleteAllReminders()
+        remindersProvider.clear()
     }
 
 

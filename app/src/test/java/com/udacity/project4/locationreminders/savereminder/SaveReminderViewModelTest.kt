@@ -8,11 +8,9 @@ import com.udacity.project4.R
 import com.udacity.project4.locationreminders.MainCoroutinesRule
 import com.udacity.project4.locationreminders.data.FakeDataSource
 import com.udacity.project4.locationreminders.data.ReminderDataSource
-import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.local.RemindersDatabase
 import com.udacity.project4.locationreminders.getOrAwaitValue
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
-import com.udacity.project4.locationreminders.reminderslist.RemindersListViewModel
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.pauseDispatcher
@@ -55,7 +53,7 @@ class SaveReminderViewModelTest {
         )
             .allowMainThreadQueries()
             .build()
-        dataSource = FakeDataSource(database.reminderDao())
+        dataSource = FakeDataSource()
         viewModel = SaveReminderViewModel(ApplicationProvider.getApplicationContext(),dataSource)
     }
 
