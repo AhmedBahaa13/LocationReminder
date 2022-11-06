@@ -15,5 +15,11 @@
         <item name="android:color">@color/colorPrimary</item>
     </style>
 
+    <style name="TextStyle">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 
 </resources>

@@ -35,8 +35,7 @@ class SaveReminderViewModelTest {
     val mainCoroutinesRule = MainCoroutinesRule()
 
     private lateinit var viewModel: SaveReminderViewModel
-    private lateinit var dataSource: ReminderDataSource
-    private lateinit var database: RemindersDatabase
+    private lateinit var dataSource: FakeDataSource
     val reminderDataItem = ReminderDataItem(
         title = "Test",
         description = "Description",
@@ -47,19 +46,12 @@ class SaveReminderViewModelTest {
 
     @Before
     fun setupTest() {
-        database = Room.inMemoryDatabaseBuilder(
-            ApplicationProvider.getApplicationContext(),
-            RemindersDatabase::class.java
-        )
-            .allowMainThreadQueries()
-            .build()
         dataSource = FakeDataSource()
         viewModel = SaveReminderViewModel(ApplicationProvider.getApplicationContext(),dataSource)
     }
 
     @After
     fun cleanTest() {
-        database.close()
         stopKoin()
     }
 

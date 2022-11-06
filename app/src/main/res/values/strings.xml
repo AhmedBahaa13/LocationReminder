@@ -45,4 +45,10 @@
     <string name="error_adding_geofence">Error Happened, Can\'t Add Geofence</string>
     <string name="Google">Sign In With Google</string>
     <string name="sign_email">Sign In With Email</string>
+    // Formats
+    <string name="titleWithFormat">Title: %s</string>
+    <string name="descriptionWithFormat">Description: %s</string>
+    <string name="locationWithFormat">Location: %s</string>
+    <string name="latitudeWithFormat">Latitude: %f</string>
+    <string name="longitudeWithFormat">Longitude: %f</string>
 </resources>
