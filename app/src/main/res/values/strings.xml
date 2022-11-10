@@ -51,4 +51,5 @@
     <string name="locationWithFormat">Location: %s</string>
     <string name="latitudeWithFormat">Latitude: %f</string>
     <string name="longitudeWithFormat">Longitude: %f</string>
+    <string name="dismss">Dismiss</string>
 </resources>

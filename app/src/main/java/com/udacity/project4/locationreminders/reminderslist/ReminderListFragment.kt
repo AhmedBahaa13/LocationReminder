@@ -57,47 +57,8 @@ class ReminderListFragment : BaseFragment() {
         binding.lifecycleOwner = this
         setupRecyclerView()
         binding.addReminderFAB.setOnClickListener {
-            if(checkLocationPermissions()){
-                navigateToAddReminder()
-            }else{
-                askUserPermissions()
-            }
+            navigateToAddReminder()
         }
-    }
-
-    private fun askUserPermissions() {
-        var permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q )
-            permissions += Manifest.permission.ACCESS_BACKGROUND_LOCATION
-        ActivityCompat.requestPermissions(requireActivity(), permissions,LOCATION_PERMISSION_REQUEST)
-        ActivityCompat.OnRequestPermissionsResultCallback { requestCode, permissions, grantResults ->
-            Snackbar.make(
-                binding.refreshLayout,
-                R.string.permission_denied_explanation,
-                Snackbar.LENGTH_INDEFINITE
-            ).setAction(R.string.settings) {
-                    startActivity(Intent().apply {
-                        action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                        data = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    })
-                }.show()
-        }
-
-    }
-
-    private fun checkLocationPermissions(): Boolean {
-        var isGranted = false
-        if (ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-            isGranted = true
-
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
-            isGranted = ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        }
-        return isGranted
     }
 
     override fun onResume() {
@@ -118,7 +79,6 @@ class ReminderListFragment : BaseFragment() {
     private fun setupRecyclerView() {
         val adapter = RemindersListAdapter {
         }
-
 //        setup the recycler view using the extension function
         binding.reminderssRecyclerView.setup(adapter)
     }
@@ -146,32 +106,5 @@ class ReminderListFragment : BaseFragment() {
         super.onCreateOptionsMenu(menu, inflater)
 //        display logout as menu item
         inflater.inflate(R.menu.main_menu, menu)
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == LOCATION_PERMISSION_REQUEST){
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                navigateToAddReminder()
-            }else{
-                Log.d("ReminderListFragment", "onRequestPermissionsResult: Please Access Location Permission From App Settings")
-                Snackbar.make(
-                    binding.refreshLayout,
-                    R.string.permission_denied_explanation,
-                    Snackbar.LENGTH_INDEFINITE
-                )
-                    .setAction(R.string.settings) {
-                        startActivity(Intent().apply {
-                            action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                            data = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        })
-                    }.show()
-            }
-        }
     }
 }
