@@ -46,11 +46,6 @@ import org.mockito.Mockito.verify
 @MediumTest
 class ReminderListFragmentTest {
 
-//    TODO: test the navigation of the fragments.
-//    TODO: test the displayed data on the UI.
-//    TODO: add testing for the error messages.
-
-
     private lateinit var repository: ReminderDataSource
     private lateinit var saveReminderViewModel: SaveReminderViewModel
     private lateinit var remindersViewModel: RemindersListViewModel
@@ -152,6 +147,5 @@ class ReminderListFragmentTest {
         saveReminderViewModel.validateAndSaveReminder(reminder)
         onView(withId(com.google.android.material.R.id.snackbar_text))
             .check(matches(withText(R.string.err_enter_title)))
-
     }
 }

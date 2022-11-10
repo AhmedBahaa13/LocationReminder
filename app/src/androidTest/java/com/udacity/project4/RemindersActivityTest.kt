@@ -122,6 +122,8 @@ class RemindersActivityTest :
         closeSoftKeyboard()
         // add Location
         onView(withId(R.id.selectLocation)).perform(click())
+        onView(withId(com.google.android.material.R.id.snackbar_action))
+            .perform(click())
         onView(withId(R.id.map)).perform(click())
         // Test was falling when try click on add_location cause of
         // button is not Completely visible
@@ -160,6 +162,8 @@ class RemindersActivityTest :
         }
         onView(withId(R.id.addReminderFAB)).perform(click())
         onView(withId(R.id.selectLocation)).perform(click())
+        onView(withId(com.google.android.material.R.id.snackbar_action))
+            .perform(click())
         onView(withId(R.id.map)).perform(click())
         Thread.sleep(800L)
 
